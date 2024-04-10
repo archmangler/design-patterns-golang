@@ -1,20 +1,40 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 	"time"
 )
 
 const port = ":4000"
 
-type application struct{}
+type application struct {
+	templateMap map[string]*template.Template
+	config      appConfig
+}
+
+type appConfig struct {
+	useCache bool
+}
 
 func main() {
 
 	//declare a variable "app" of type "application"
-	app := application{}
+	app := application{
+		templateMap: make(map[string]*template.Template),
+		config: appConfig{
+			useCache: true,
+		},
+	}
+
+	fmt.Println("DEBUG> Using the cache: ", app.config.useCache, " <DEBUG")
+
+	flag.BoolVar(&app.config.useCache, "cache", true, "Use template cache")
+
+	flag.Parse()
 
 	//Handler function for any requests for the "/" resource
 	/*
